@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+#pragma warning disable CS1069 // The type name 'MonoBehaviour' could not be found. It is forwarded to assembly 'UnityEngine.CoreModule'
+
 namespace KRASH_VisualsBridge
 {
     [KSPAddon(KSPAddon.Startup.Flight, false)]
@@ -183,3 +185,5 @@ namespace KRASH_VisualsBridge
         }
     }
 }
+
+#pragma warning restore CS1069
