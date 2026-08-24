@@ -1,0 +1,27 @@
+name: Build KRASH Visuals Bridge
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build
+        run: msbuild KRASH_VisualsBridge.csproj /p:Configuration=Release
+
+      - name: Upload DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: KRASH_VisualsBridge
+          path: bin/Release/KRASH_VisualsBridge.dll
