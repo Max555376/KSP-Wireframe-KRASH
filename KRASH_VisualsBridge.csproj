@@ -26,11 +26,6 @@
       <HintPath>lib\UnityEngine.dll</HintPath>
       <Private>false</Private>
     </Reference>
-
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>lib\UnityEngine.CoreModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
