@@ -32,6 +32,11 @@
       <HintPath>lib\UnityEngine.dll</HintPath>
       <Private>false</Private>
     </Reference>
+
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>/c/Program Files (x86)/Steam/steamapps/common/Kerbal Space Program/KSP_x64_Data/Managed/UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
