@@ -14,6 +14,12 @@
     <WarningLevel>4</WarningLevel>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
+    
+    <!-- Disable CS1069 warning globally -->
+    <NoWarn>$(NoWarn);1069</NoWarn>
+    
+    <!-- Output as DLL (required for KSP mods) -->
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
