@@ -15,6 +15,7 @@ namespace KRASH_VisualsBridge
 
         // états sauvegardés pour restauration à la fin de la simu
         private bool scattererWireframeBefore = false;
+        private bool scattererWireframeModified = false; // Track if we successfully modified scatterer wireframe
         private bool parallaxWasActive = true;
         private bool eveWasActive = true;
         private bool dynamicCloudWasActive = true;
@@ -71,11 +72,20 @@ namespace KRASH_VisualsBridge
         {
             if (!applied) return;
             Debug.Log(TAG + " Fin de simulation -> restauration");
-            SetScattererWireframe(scattererWireframeBefore);
+            if (scattererWireframeModified)
+            {
+                SetScattererWireframe(scattererWireframeBefore);
+            }
+            else
+            {
+                Debug.Log(TAG + " Scatterer wireframe was not modified, skipping restoration");
+            }
             SetGameObjectsActive("Parallax", parallaxWasActive);
             SetGameObjectsActive("EVE", eveWasActive);
             SetGameObjectsActive("Cloud", dynamicCloudWasActive);
             applied = false;
+            // Reset the modified flag for next simulation
+            scattererWireframeModified = false;
         }
 
         // ---------- Scatterer : bascule du mode wireframe par réflexion ----------
@@ -121,6 +131,7 @@ namespace KRASH_VisualsBridge
                     }
 
                     Debug.Log(TAG + $" Scatterer.{type.Name}.{wireframeMember.Name} -> {state} (était {previous})");
+                    scattererWireframeModified = true; // Mark that we successfully modified scatterer wireframe
                     return previous;
                 }
 
