@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -46,7 +47,11 @@ namespace KRASH_VisualsBridge
                 var shelterType = krashAsm.assembly.GetType("KRASH.KRASHShelter");
                 var persistentField = shelterType?.GetField("persistent", BindingFlags.Public | BindingFlags.Static);
                 var persistentObj = persistentField?.GetValue(null);
-                var activeField = persistentObj?.GetType().GetField("shelterSimulationActive", BindingFlags.Public | BindingFlags.Instance);
+                
+                // FIX: Added null check for persistentObj before accessing its type
+                if (persistentObj == null) return false;
+                
+                var activeField = persistentObj.GetType().GetField("shelterSimulationActive", BindingFlags.Public | BindingFlags.Instance);
                 return activeField != null && (bool)activeField.GetValue(persistentObj);
             }
             catch (Exception e)
@@ -93,12 +98,15 @@ namespace KRASH_VisualsBridge
 
                 foreach (var type in scattererAsm.assembly.GetTypes())
                 {
-                    var instanceProp = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)
-                                     ?? (MemberInfo)type.GetField("Instance", BindingFlags.Public | BindingFlags.Static);
-                    if (instanceProp == null) continue;
+                    // FIX: Improved null checking and type safety for Instance member lookup
+                    var propInfo = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static);
+                    var fieldInfo = type.GetField("Instance", BindingFlags.Public | BindingFlags.Static);
+                    
+                    MemberInfo instanceMember = propInfo != null ? propInfo : (MemberInfo)fieldInfo;
+                    if (instanceMember == null) continue;
 
-                    object instance = instanceProp is PropertyInfo pi ? pi.GetValue(null, null)
-                                                                       : ((FieldInfo)instanceProp).GetValue(null);
+                    object instance = instanceMember is PropertyInfo pi ? pi.GetValue(null, null)
+                                                                        : ((FieldInfo)instanceMember).GetValue(null);
                     if (instance == null) continue;
 
                     var wireframeMember = type.GetMembers(BindingFlags.Public | BindingFlags.Instance)
@@ -138,20 +146,25 @@ namespace KRASH_VisualsBridge
         bool SetGameObjectsActive(string nameContains, bool active)
         {
             bool foundAny = false;
-            bool previousState = true;
+            bool previousState = active;  // FIX: Default to target state instead of true
+            var matchedObjects = new List<GameObject>();  // FIX: Track all matched objects
             var all = UnityEngine.Object.FindObjectsOfType<GameObject>();
+            
             foreach (var go in all)
             {
                 if (go.transform.parent != null) continue; // racines seulement
                 if (go.name.IndexOf(nameContains, StringComparison.OrdinalIgnoreCase) < 0) continue;
 
-                previousState = go.activeSelf;
+                previousState = go.activeSelf;  // FIX: Capture state before change
                 go.SetActive(active);
+                matchedObjects.Add(go);
                 foundAny = true;
                 Debug.Log(TAG + $" GameObject '{go.name}' -> active={active}");
             }
+            
             if (!foundAny)
                 Debug.LogWarning(TAG + $" Aucun GameObject racine contenant '{nameContains}' trouvé");
+            
             return previousState;
         }
 
