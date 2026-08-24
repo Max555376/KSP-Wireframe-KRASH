@@ -30,9 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Ajuste le chemin selon l'emplacement réel de ton fichier C# -->
-    <Compile Include="KRASH_VisualsBridge.cs" />
-    <!-- Si le fichier est bien dans un dossier Source/ : <Compile Include="src\KRASH_VisualsBridge.cs" /> -->
+    <Compile Include="src\KRASH_VisualsBridge.cs" />
   </ItemGroup>
 
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
